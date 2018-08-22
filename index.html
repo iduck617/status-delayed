@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<canvas id="canvas"></canvas>
+<head>
+	<title> STATUS: DELAYED - PROJECT 1: CS 3300 - Isaiah Duck (imd9), Stephanie Chang (sc2524), Jordan Silbert (jfs284)</title>
+	<canvas id="canvas"></canvas>
+	<script src="http://d3js.org/topojson.v2.min.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.21.0/d3-legend.js"></script>
+	<script src="background.js"></script>
+	<style>
+		@font-face {
+    		font-family: Futura;
+    		src: url(Futura.ttc);
+		}
+		html {
+		    display: table;
+		    margin: auto;
+		    font-family:Futura, sans-serif;
+		}
+		body {
+			min-height: 100vh;
+			max-width: 100%;
+			overflow-x:hidden;
+			display: table-cell;
+    		vertical-align: middle;
+		}
+		path.state { fill: #000; stroke: #eee; }
+		.axis line{
+			stroke:black;
+			shape-rendering: crispEdges;
+  			stroke-width: 1px;
+		}
+		.axis path{
+			stroke:black;
+		}
+		.axis text{
+			stroke:black;
+			font-size:8px;
+		}
+		#canvas, #text {
+			position: absolute;
+			display: block;
+			top: 0;
+			left: 0;
+			z-index: -1;
+		}
+		#text {
+		  min-height: 100vh;
+		  width: 100vw;
+		  z-index: 1;
+		  color: #fff;
+		  text-transform: uppercase;
+		  font-size: 8vmin;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		}
+		#svg_map{
+			transform:scale(0.9);
+			display:block;
+			max-width: 100%;
+			margin:auto;
+		}
+		.span1{
+			color:white;
+			font-weight:bold;
+			height:40px;
+			vertical-align: middle;
+			white-space: nowrap;
+			padding:10px 5px 10px 5px;
+			text-align:center;
+			width:50%;
+		}
+		#plane{
+			vertical-align: middle;
+			position:absolute;
+			height:60px;
+			filter:invert(100%);
+			left:0;
+			right:0;
+			margin:auto;
+		}
+		.page-title{
+			width:90%;
+			margin:auto;
+		}
+		.header{
+			width:95%;
+			margin: 0 auto;
+		}
+		.paragraph{
+			width:80%;
+			margin:auto;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+		.paragraph1{
+			width:35%;
+			padding-right: 20px;
+			float: left;
+		}
+		.paragraph2{
+			width:55%;
+			padding-left: 20px;
+			float: right;
+		}
+		.bary-axis{
+			dominant-baseline:central;
+		}
+		#svg_bar1{
+			padding-right:100px;
+		}
+		h1 span{
+			display:table-cell;
+    		text-align:center;
+		}
+		.title_color{
+			display:table;
+    		width:100%;
+		}
+		.title_word{
+			z-index:10;
+			position:absolute;
+			display:table;
+    		width:100%;
+    		color:white;
+		}
+		table{
+			border-collapse:collapse;
+		}
+		table, th, td {	
+    		border: 1px solid black;
+    		padding:5px;
+    		font-size:12px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="page-title">
+	    <h1 id="header" style="position:relative;color:black; border-radius:4px">
+	    	<div class="title_word"><span class="span1">STATUS</span><span class="span1">DELAYED</span></div>
+	    	<div class="title_color"><span style="border-bottom-left-radius: 5px;border-top-left-radius: 5px; background-color:black;" class="span1" "></span><img id="plane" src="plane.svg"/><span style="border-bottom-right-radius: 5px;border-top-right-radius: 5px; background-color:red;" class="span1"></h1>
+	    <h2 style="color:black; text-align:center; left:0; right:0; margin:auto; top:130px;">An Analysis of Air Travel Delays by Airport Size, and Carriers.</h2>
+	</div><br /><br />
+	<div class="section">
+		<div class="header" style="width:80%; color:rgb(28,34,35)"><strong>On Standby.</strong></div> <br>
+			<p class="paragraph">
+				You are all ready for your hard earned vacation; sunglasses packed, sunscreen at the ready, flip flops on. You get to the airport, but there is a red flashing sign on the monitor next to your flight name: <span style="color:white; background-color:red;font-weight: bold">&nbspDELAYED&nbsp</span>. Weather, security, aviation systems, late aircrafts, and carriers are amongst the many reasons that planes are delayed and airport schedules are slowed. Weary passengers' patience grows thin as they miss connections and are forced to spend extended periods of time in germ-ridden airports. So we set out on a mission to find correlations between the number of the airports' flights and types of delays.
+			</p>
+			<br> 
+
+			<p class="paragraph">
+				The visualizations below come from an extensive data set on 29 major airports across the
+			United States with data ranging from 2004 to 2015. We processed the data in several ways. First, we classified the airports' "size" by the total number of flights leaving the airport within the given time frame; as visualized by a log scale of circle radius (PDX - the smallest, and ATL - the largest are noted). Geographically where it is located, we simply projected the latitude and longitude on the continental map. Finally, and most importantly, we calculated the total percentage of delayed flights that are departing each airport and mapped it to the blue-red color scale: the more red, the greater number of departing flights were delayed. The airports' codes are found in the <i>Airport Codes</i> section. 
+			<div id="worldmap" class="graphic" align="absolute"></div>
+
+			<p class="paragraph">
+				We hypothesized that the larger the airport "size", the greater amount of delays would occur. However, as evidenced there seems to be little to no correlation between our classification of airport "size" to frequency of delays. The metro hub airports such as JFK and SFO seemed to experience heavy delays (more red), while the midwestern/rural airports experienced much less delays. This is interesting, yet not enough to show any significant correlations, so we decided to create the charts below in an attempt to find a deeper connection.
+			</p>
+
+			</p><br />
+	</div><br />
+	<div class="section">
+		<div class="header" style="color:rgb(28,34,35); width:80%"><strong>A Breakdown of Delays.</strong></div><br>
+		<p class="paragraph">
+			Inspecting the duration of delays due to factors such as the National Aviation Systems, Security, Weather, Late Aircrafts, and Carriers, we can obtain a progressive annual view of delays. The left graph is sorted by year, visualizing the length of delays by different facotrs, by number of days, for all 29 airports. Similarly, the right graph shows the total breakdown of delays for each airport, summed thourough the years.
+		<br><br>
+		</p>
+		<div id="legend" class="graphic" align="center"></div> <br />
+		<div id="barchart1" class="graphic" align="center"></div>
+		<p class="paragraph" style="padding-left:100px;font-size:12px">
+			<i>*Security is represented in the graph; however, the duration of security delays is miniscule compared to the other forms of delay. We chose to still visualize the data to show the inconsequentialness of security delays.</i>
+		</p>
+
+	</div>
+	<div class="section">
+		<div class="paragraph">
+		<p class="paragraph1">
+			From the left visualization we can see that there is a fairly uniform distribution in delays per year. From 2004 to 2007, there is a steady increase in total delay time, with 2007 being the peak year of airport delays. From 2008 onward the number of days for the delays normalizes. Interestingly, as technology and regulations progress and develop, no specific delay causations decline. While the delays decrease slightly after 2007, afterwards there is no evidence of delay durations decreaseing.
+			</p>
+		<p class="paragraph2">
+			The right visulization shows the total duration of each type of delay throughout the span of data for each airport (airport code appendix listed below Conclusion). As evidenced, the Chicago O'Hare International Airport (ORD) and the Hartsfield-Jackson Atlanta International Airport (ATL) have the greatest amount of delays by a large margin. A possible reason for this can be that these two airports are often where passengers take connecting flights, which leads to an increased amount of total flights, as seen in the map.
+		</p>
+		</div>
+		<br>
+		<div id="barchart2"></div>
+	<div class="section" style="clear:left"><br><br>
+	<div class="section">
+		<div class="header" style="color:rgb(28,34,35); width:80%"><strong>A Successful Landing.</strong></div><br>
+		<p class="paragraph">
+			When we began our journey to find the cause of delays, we found there was little to no correlation between the amount of departing air traffic and percentage of flights delayed. As we searched through the data more finely, the duration of delays seemed to be a static ratio for nearly eleven years. Yet, when we visualized the total duration of delays, we found an interesting correlation. The Chicago O'Hare International Airport (ORD) and the Hartsfield-Jackson Atlanta International Airport (ATL) had the largest accumulated delays throughout our span of data. This trend follows throughout our data. Additionally, these airports were the top two airports with the most air traffic or total number of flights as shown in the first map. This leads us to believe that the amount of air traffic determines the length of delay, not the chance of getting delayed. Despite this realization, there does not seem to be any correlation with the percentage of air traffic delayed overall. This could be due to the lack of data. We only have a small limited sample of airports, which limits our ability to make conclusions. As for determining if your flight will be delayed, it may be best just to cross your fingers and hope for the best (or avoid the airports with heavy traffic).
+		</p>
+	</div><br><br><br>
+		<div class="header" style="color:rgb(28,34,35); width:80%"><strong>Airport Code Appendix.</strong></div>
+			<div style=" margin: 0px auto; text-align:center; padding:20px">
+		 	<table style="width:18%;display:inline-table; margin-right:30px">
+		 		<tr><td>ATL</td> <td>Atlanta</td></tr>
+		 		<tr><td>BOS</td> <td>Boston</td></tr>
+		 		<tr><td>BWI</td> <td>Baltimore-Washington</td></tr>
+		 		<tr><td>CLT</td> <td>Charlotte Douglas</td></tr>
+		 		<tr><td>DCA</td> <td>Ronald Reagan Washington</td></tr>
+		 		<tr><td>DEN</td> <td>Denver</td></tr>
+		 		<tr><td>DFW</td><td>Dallas/Fort Worth</td></tr>
+		 		<tr><td>DTW</td> <td>Detroit Metropolitan</td></tr>
+		 		<tr><td>EWR</td> <td>Newark</td></tr>
+		 		<tr><td>FLL</td> <td>Fort Lauderdale</td></tr>
+		 	</table>
+		 	<table style="width:18%;margin-right: 30px; display:inline-table;">
+		 		<tr><td>IAD</td> <td>Dulles</td></tr>
+		 		<tr><td>IAH</td> <td>George Bush</td></tr>
+		 		<tr><td>JFK</td> <td>John F. Kennedy</td></tr>
+		 		<tr><td>LAS</td> <td>McCarran</td></tr>
+		 		<tr><td>LAX</td> <td>Los Angeles</td></tr>
+		 		<tr><td>LGA</td> <td>LaGuardia</td></tr>
+		 		<tr><td>MCO</td> <td>Orlando</td></tr>
+		 		<tr><td>MDW</td> <td>Midway</td></tr>
+		 		<tr><td>MIA</td> <td>Miami</td></tr>
+		 		<tr><td>MSP</td> <td>Minneapolis-Saint Paul</td></tr>
+		 	</table>
+		 	</table>
+		 	<table style="width:18%; display:inline-table;">
+		 		<tr><td>ORD</td> <td>Chicago O'Hare</td></tr>
+		 		<tr><td>PDX</td> <td>Portland</td></tr>
+		 		<tr><td>PHL</td> <td>Philadelphia</td></tr>
+		 		<tr><td>PHX</td> <td>Phoenix</td></tr>
+		 		<tr><td>SAN</td> <td>San Diego</td></tr>
+		 		<tr><td>SEA</td> <td>Seattle</td></tr>
+		 		<tr><td>SFO</td> <td>San Francisco</td></tr>
+		 		<tr><td>SLC</td> <td>Salt Lake</td></tr>
+
+		 		<tr><td>TPA</td> <td>Tampa</td></tr>
+		 	</table>
+		 	</div>
+		<br><br>
+		<div class="header"  style="color:rgb(28,34,35); width:80%"><strong>Description of Data.</strong> </div><br>
+		<p class="paragraph">
+			The data for our charts and map come from <a href="https://think.cs.vt.edu/corgis/csv/airlines/airlines.html">https://think.cs.vt.edu/corgis/csv/airlines/airlines.html</a>. We consolidated the data and formed new data sheets, which are attached in the zip to help clean the data and make it usable for the charts. We created the data files map_data.csv, bargraph-years.csv, and bargraph-airport-delay.csv. The original data file is named airline_original.csv
+			<br><br>
+			In the map_data.csv, we have the airport variable as the identifier for each row. We also have the longitude and latitude of each airport, which was found through <a href="https://www.google.com/">www.google.com</a>. Another variable that we used was the flightsDelayed, which is the addition of all the number of delays ranging from causes such as National Aviation System, Security, Weather, Late Aircraft, and Carrier. We also used the totalFlights to help generate different colors on the map to represent each airport. Using this we are able to generation the percentDelayed, which is what the map uses. There are other variables in the file for calculation purposes as well. At first we wanted to use the length of airport runways to classify their scale, but after testing we found that strictly using the number of departing flights best suited the task, as runway length and air traffic have minimal correlation. <br><br>
+			In bargraph-years.csv, the identifier is the Year column. This data was used to create the first bargraph or the one on the left above. Each column Carrier, Late_Aircraft, National_Aviation_System, Security, and Weather are used for the data. These columns have taken the original representation in minutes and divided it by (60*24) to represent the value in days. This is to make the data more quantifiable and easily understand to people reading the charts. Other variables are left for calculation purposes. <br><br>
+			The data bargraph-airport-delay.csv, has the same layout as bargraph_years.csv, except the identifier or x-axis in this case is the Airport. <br>
+
+		</p>
+		<br><br><br>
+	</div>
+	<div class="section">
+		<div class="header" style="color:rgb(28,34,35); width:80%"><strong>Description of the Data Mapping.</strong></div><br>
+		<p class="paragraph">
+			For the overlayed US map, we defined the airports' size by the total number of flights leaving the airport within the dataset's given time frame. This was visualized by the length of the circle radius on a log scale (PDX - the smallest, and ATL - the largest as noted). Additionally, for the geographic location, we simply projected the airport's latitude and longitude on to the continental map. Finally, we calculated the total percentage of flights that are delayed leaving each airport by determining the precentage of flights delayed of the total from each airport, then mapped the more delayed to the red hues of a blue-red color gradient, and the lesser delayed flights to the blue hues, with middle values in between.
+		</p><br>
+		<p class="paragraph">
+			In the bar graphs, the x-axis was scaled using a scale band to portray the years or airports. Since the x-axis wasn't necessarily numerical data that had a mathematical correlation with each other, this was necessary. The y-axis was scaled linearly to the delays in the unit of days. An extra scale for the height was needed to create the bargraphs. Each bar in the graph is actually 5 overlapping bars to properly display the data. For example, the bars in the back to display National Aviation System had data that accumulated the delays from the previous bar: Security, Weather, Late Aircraft and Carrier to properly scale the height. The colors in each section are chosen to match the colors in the map; however, security has a light green color. This is because security is hard to see and to contrast it with the current colors, we decided to make it a lighter color. It is still hard to see the section for security; however, this just shows that the amount of delay caused by security is insignficant compared to the other causes. We specifically used a bar graph to contrast each type of delay with each other, while still being able to compare the total duration of delays for each x-axis varible. <br><br>
+		</p>
+		<p class="paragraph">*Note that the story is integrated with the map and chart elements to better layout our visualizations and conclusions we draw from it.</p>
+	</div><br><br>
+	<script>
+	function initMap () {
+		var ad;
+
+		d3.csv("map_data.csv", function (data) {
+		  data.forEach( function (d) {
+		    d.lat = +d.lat;
+		    d.long = +d.long;
+		    d.lengthRunway = +d.lengthRunway;
+		    d.totalFlights = +d.totalFlights;
+		  });
+		  ad = data;
+		});
+
+		d3.select("#worldmap")
+		  .append("svg")
+		  .attr("height", 650)
+		  .attr("width", 1100)
+		  .attr("id", "svg_map");
+
+		var svg = d3.select("#svg_map");
+
+		svg
+		.append("g")
+		.attr("id", "map-legend")
+		.attr("transform", "translate(0,40)");
+
+		var projection = d3.geoAlbersUsa();
+		var pathGenerator = d3.geoPath().projection(projection);
+
+		d3.json("us.json", function (data) {
+			var states = topojson.feature(data, data.objects.states);
+			showMap(states, ad);
+		});
+
+		//Compile and show map with airport data
+		function showMap(states, airport_data) {
+			projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], states);
+
+			var paths = svg.selectAll("path.state")
+						   .data(states.features);
+
+			var mintotalFlights = d3.min(ad, function(d) { return d.totalFlights; });
+			var maxtotalFlights = d3.max(ad, function(d) { return d.totalFlights; });
+			var minPercentDelayed = d3.min(ad, function (d) { return d.percentDelayed; });
+			var maxPercentDelayed = d3.max(ad, function(d) { return d.percentDelayed; });
+
+			var radiusScaleFunc = d3.scaleLog().domain([mintotalFlights, maxtotalFlights]).range([5, 30]);
+			var colorScale = d3.scaleLinear().domain([minPercentDelayed, maxPercentDelayed]).range(['blue', 'red']);
+
+			var mapLegend = d3.legendColor()
+							  .labelFormat(d3.format(".0f"))
+				              .orient('vertical')
+				              .ascending(true)
+				              .title("Percent of Air Traffic Delayed")
+				              .titleWidth(80)
+				              .scale(colorScale)
+				              .shape("path", d3.symbol().type(d3.symbolCircle).size(180)())
+			  				  .shapePadding(10);
+
+        	d3.select("#map-legend").call(mapLegend);
+
+			paths.enter()
+				 .append("path")
+				 .attr("class","state")
+				 .merge(paths)
+				 .attr("d", function (state) {
+					return pathGenerator(state);
+				});
+
+			var circles = svg.selectAll("circle").data(ad);
+
+			circles.enter()
+				   .append("circle")
+				   .attr("cx", function (d) { return projection([d.long,d.lat])[0]; })
+				   .attr("cy", function (d) { return projection([d.long,d.lat])[1]; })
+				   .attr("r", 0)
+				   .transition()
+				   .attr("r", function (d) {return radiusScaleFunc(d.totalFlights); })
+				   .style("fill-opacity", .7)
+				   .style("fill", function (d) { return colorScale(d.percentDelayed); })
+				   .attr("cx", function (d) { return projection([d.long,d.lat])[0]; })
+				   .attr("cy", function (d) { return projection([d.long,d.lat])[1]; })
+			       .style("stroke", "#cfcccc")
+				   .delay(function (d,i) { return (60 * i); })
+				   .duration(1500);
+
+			var pointX_Smallest = projection([ad[21].long,ad[21].lat])[0];
+			var pointY_Smallest = projection([ad[21].long,ad[21].lat])[1];
+
+			var textX_Smallest = pointX_Smallest + 60;
+			var textY_Smallest = pointY_Smallest + 40;
+
+			svg.append("line")
+			   .attr("x1", pointX_Smallest)
+			   .attr("y1", pointY_Smallest)
+			   .attr("x2", textX_Smallest)
+			   .attr("y2", textY_Smallest)
+			   .attr("stroke-width", 1)
+			   .attr("stroke", "white");
+
+			svg.append("text")
+			   .attr("x", textX_Smallest )
+			   .attr("y", textY_Smallest + 15)
+			   .attr("text-anchor", "middle")
+			   .attr("fill","white")
+			   .text("PDX: 655,331 Flights Total");
+
+			var pointX_Largest = projection([ad[0].long,ad[0].lat])[0];
+			var pointY_Largest = projection([ad[0].long,ad[0].lat])[1];
+
+			var textX_Largest = pointX_Largest - 150;
+			var textY_Largest = pointY_Largest - 25;
+
+			svg.append("line")
+			   .attr("x1", pointX_Largest)
+			   .attr("y1", pointY_Largest)
+			   .attr("x2", textX_Largest)
+			   .attr("y2", textY_Largest)
+			   .attr("stroke-width", 1)
+			   .attr("stroke", "white");
+
+			svg.append("text")
+			   .attr("x", textX_Largest )
+			   .attr("y", textY_Largest - 5)
+			   .attr("text-anchor", "middle")
+			   .attr("fill","white")
+			   .text("ATL: 4,847,036 Flights Total");
+
+			var pointX_ORD = projection([ad[20].long,ad[20].lat])[0];
+			var pointY_ORD = projection([ad[20].long,ad[20].lat])[1];
+
+			var textX_ORD = pointX_ORD - 50;
+			var textY_ORD = pointY_ORD + 50;
+
+			svg.append("line")
+			   .attr("x1", pointX_ORD)
+			   .attr("y1", pointY_ORD)
+			   .attr("x2", textX_ORD)
+			   .attr("y2", textY_ORD)
+			   .attr("stroke-width", 1)
+			   .attr("stroke", "white");
+
+			svg.append("text")
+			   .attr("x", textX_ORD )
+			   .attr("y", textY_ORD + 15)
+			   .attr("text-anchor", "middle")
+			   .attr("fill","white")
+			   .text("ORD: 3,973,794 Flights Total");
+
+			var pointX_SFO = projection([ad[26].long,ad[26].lat])[0];
+			var pointY_SFO = projection([ad[26].long,ad[26].lat])[1];
+
+			var textX_SFO = pointX_SFO + 35;
+			var textY_SFO = pointY_SFO - 35;
+
+			svg.append("line")
+			   .attr("x1", pointX_SFO)
+			   .attr("y1", pointY_SFO)
+			   .attr("x2", textX_SFO)
+			   .attr("y2", textY_SFO)
+			   .attr("stroke-width", 1)
+			   .attr("stroke", "white");
+
+			svg.append("text")
+			   .attr("x", textX_SFO )
+			   .attr("y", textY_SFO - 3)
+			   .attr("text-anchor", "middle")
+			   .attr("fill","white")
+			   .text("SFO");
+
+			var pointX_JFK = projection([ad[12].long,ad[12].lat])[0];
+			var pointY_JFK = projection([ad[12].long,ad[12].lat])[1];
+
+			var textX_JFK = pointX_JFK - 35;
+			var textY_JFK = pointY_JFK - 35;
+
+			svg.append("line")
+			   .attr("x1", pointX_JFK)
+			   .attr("y1", pointY_JFK)
+			   .attr("x2", textX_JFK)
+			   .attr("y2", textY_JFK)
+			   .attr("stroke-width", 1)
+			   .attr("stroke", "white");
+
+			svg.append("text")
+			   .attr("x", textX_JFK )
+			   .attr("y", textY_JFK - 3)
+			   .attr("text-anchor", "middle")
+			   .attr("fill","white")
+			   .text("JFK");
+		};
+	};
+
+	function initBarChart (filename, id, colID, colors) {
+		var parseRow = function(row) {
+			row.Carrier = parseInt(row.Carrier)
+			row.Late_Aircraft = parseInt(row.Late_Aircraft) +  row.Carrier;
+			row.Weather = parseInt(row.Weather) +  row.Late_Aircraft;
+			row.Security= parseInt(row.Security) +  row.Weather;
+			row.National_Aviation_System = parseInt(row.National_Aviation_System) + row.Security;
+			return row; 
+		};
+
+		d3.csv(filename, parseRow, callback);
+
+		var margin = {top: 60, right: 50, bottom: 60, left: 50};
+
+		function callback (error, data){
+			timeDelay = data;
+			createBar(xScale, yScale);
+		};
+		if (colID == "Year"){
+			var svg2 = d3.select(id)
+						 .append("svg")
+						 .attr("height", 400)
+						 .attr("width", 350)
+						 .attr("id", "svg_bar1");
+
+			var w = svg2.attr("width");
+			var h = svg2.attr("height");
+			var xScale = d3.scaleBand()
+				  		   .domain(["2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014", "2015"])
+						   .range([margin.right, w])
+						   .padding(0.1);
+		} else {
+			var svg2 = d3.select(id)
+						 .append("svg")
+						 .attr("height", 400)
+						 .attr("width", 700)
+						 .attr("id", "svg_bar2");
+
+			var w = svg2.attr("width");
+			var h = svg2.attr("height");
+
+			var xScale = d3.scaleBand()
+						   .domain(["ATL","BOS","BWI","CLT","DCA","DEN","DFW","DTW","EWR","FLL","IAD","IAH","JFK","LAS","LAX","LGA","MCO","MDW","MIA","MSP",	 "ORD","PDX","PHL","PHX","SAN","SEA","SFO","SLC", "TPA"])
+						   .range([50, w])
+						   .padding(0.1);
+		}
+		var yScale = d3.scaleLinear()
+					   .domain([0, 800])
+					   .range([h-margin.top,margin.bottom]);
+		var heightScale = d3.scaleLinear()
+						    .domain([0, 800])
+					 		.range([margin.bottom, h-margin.top]);
+		var xAxis = d3.axisBottom(xScale).tickSize(0).tickSizeOuter(0);
+
+		svg2.append("g")
+			.attr("class", "axis")
+			.call(xAxis)
+			.attr("transform", "translate(0,340)");
+
+		svg2.append("text")
+		    .text(colID)
+		    .attr("transform","translate("+(25+(w-margin.left)/2)+",370)");
+
+
+		var yAxis = d3.axisLeft(yScale).tickFormat(d3.format("d")).tickSizeOuter(0).tickSize(5);
+		svg2.append("g")
+			.attr("class", "axis")
+			.call(yAxis)
+			.attr("transform", "translate(50,0)");
+		svg2.append("text")
+			.text("Delay in Days")
+			.attr("x", "0")
+			.attr("y", "230")
+			.attr("class", "bary-axis")
+			.attr("transform","rotate(-90, 20, 240)");
+
+		function createBar(xScale, yScale){
+			var colName = ["National_Aviation_System","Security","Weather", "Late_Aircraft", "Carrier"];
+			timeDelay.forEach(function(d,i){
+				var accumulator = 0;
+				for (var i = 0; i < 5; i++){
+					svg2.append("rect")
+			   		    .attr("x", xScale( (d[colID]) ))
+			   		    .attr("y", yScale(d[colName[i]]))
+			   		    .attr("width", xScale.bandwidth())
+				   	    .attr("height", heightScale(d[colName[i]])-margin.bottom)
+				   	    .style("fill", colors[i])
+				   	    .style("opacity", 0.8);
+
+				   	accumulator =  accumulator + yScale(d[colName[i]]);
+				}
+			});
+		}
+	}
+
+
+	function barLegend(id, colors){
+		var svg2 = d3.select(id)
+			  		 .append("svg")
+					 .attr("height", 50)
+					 .attr("width", 1200);
+
+		var xScale = d3.scaleBand()
+					   .domain(colors)
+					   .range([30, 1170])
+					   .padding(0.4);
+
+	    var text = ["National Aviation System","Security*","Weather", "Late Aircraft", "Carrier"];
+
+		colors.forEach(function(d,i){
+			svg2.append("rect")
+				.attr("x", xScale(d))
+			    .attr("y", 25)
+			    .attr("width",25)
+			    .attr("height",25)
+			    .attr("rx", 5)
+			    .attr("ry", 5)
+			    .style("fill", d)
+			    .style("opacity", 0.8)
+				.style("stroke", "#ccc");
+
+			svg2.append("text")
+				.text(text[i])
+				.attr("x", xScale(d) + 12.5 + 18)
+				.attr("y", 25+16)
+				.style("font-size", "14px");
+		});
+	}
+
+	var coloring = ["#000AFF","#9ed89d","#1D0058","#A300A5","#FF0000"];
+
+    initBackground();
+    initMap();
+    barLegend("#legend", coloring);
+    initBarChart("bargraph-years.csv", "#barchart1","Year", coloring);
+    initBarChart("bargraph-airport-delay.csv", "#barchart1","Airport", coloring);
+    
+	</script>
+</body>
+</html>
