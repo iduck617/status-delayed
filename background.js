@@ -1,4 +1,4 @@
-// The code below is found from https://codepen.io/dudleystorey/pen/NbNjjX. This serves as the background image for our site.
+// The code below is found from https://codepen.io/dudleystorey/pen/NbNjjX. This serves as the background.
 function initBackground () {
 	let resizeReset = function() {
 		w = canvasBody.width = window.outerWidth;
